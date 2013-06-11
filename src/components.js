@@ -1,16 +1,33 @@
 Crafty.c('Ship', {
+
   init: function(){
-    this.requires('2D, Canvas, Color, Tween');
+    this.requires('2D, Canvas, Color, Collision');
     this.color('rgb(255, 255, 255)');
     this.attr({
-      w: 2,
-      h: 2,
+      w: 10,
+      h: 10,
     });
+
+    this.health = 1000;
+
+    this.onHit('Bullet_t', this.bulletHit);
+    this.onHit('Port', this.portHit);
   },
 
-  at: function(path) {
-      this.attr({ x: path[0][0], y: path[0][1]});
-      this.go(path, 1);
+  bulletHit: function(){
+    this.health -= 10;
+    if (this.health<=0) {
+      this.destroy();
+    };
+  },
+
+  portHit: function(){
+    console.log('Port Hit');
+  }, 
+
+  at: function(path){
+    this.attr({ x: path[0][0], y: path[0][1]});
+    this.go(path, 1);
   },
 
   go: function(path, n){
@@ -23,4 +40,20 @@ Crafty.c('Ship', {
       }, 100);
     }  
   } 
+});
+
+// TO REMOVE!!!!!!!!!!!!!!!!
+Crafty.c('Bullet_t', {
+  init: function(){
+    this.requires('2D, Canvas, Color, Collision');
+    this.color('rgb(0, 0, 128)');
+    this.attr({
+      w: 2,
+      h: 2,
+    });
+  },
+
+  at: function(x, y){
+    this.attr({ x: x, y: y});
+  }
 });

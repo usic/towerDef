@@ -5,7 +5,7 @@ Game = {
     Crafty.init(300, 300);
     Crafty.background('green');
 
-    //draws Path
+    //draws Path TO REMOVE!!!!
     for (var i = 0; i < pathAr.length; i++) {
     	
     	Crafty.e('2D, Canvas, Color')
@@ -18,7 +18,9 @@ Game = {
             .color('rgb(255, 0, 0)');
     };
 
-    //add ships
+    Crafty.e('Bullet_t').at(pathAr[50][0], pathAr[50][1]);
+
+    //add ships TO CHANGE!!!!!!!!!
     setInterval(function(){
     	Crafty.e('Ship').at(pathAr);
     }, 2000);
