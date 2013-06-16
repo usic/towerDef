@@ -22,7 +22,8 @@ Game = {
 
     //add ships TO CHANGE!!!!!!!!!
     setInterval(function(){
-    	Crafty.e('Ship').at(pathAr);
+    	Crafty.e('Airship').at(pathAr);
     }, 2000);
+
   }
 }
