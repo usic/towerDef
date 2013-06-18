@@ -20,6 +20,8 @@ Game = {
 
     Crafty.e('Bullet_t').at(pathAr[50][0], pathAr[50][1]);
 
+    Crafty.e('TorpedoButton').at(280, 0);
+
     //add ships TO CHANGE!!!!!!!!!
     setInterval(function(){
     	Crafty.e('Airship').at(pathAr);

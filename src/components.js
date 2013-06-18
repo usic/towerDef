@@ -4,6 +4,7 @@ Crafty.c('Ship', {
     this.requires('2D, Canvas, Color, Collision');
     this.onHit('Bullet_t', this.bulletHit);
     this.onHit('Port', this.portHit);
+    this.onHit('Torpedo', this.torpedoHit);
     this.curentPos = 0;
   },
 
@@ -16,6 +17,12 @@ Crafty.c('Ship', {
 
   portHit: function(){
     console.log('Port Hit');
+    this.destroy();
+  },
+
+  torpedoHit: function(data){
+    torpedo = data[0].obj;
+    torpedo.remove();
     this.destroy();
   }, 
 
@@ -70,6 +77,7 @@ Crafty.c('Submarine',  {
     h: 10,
     });
     this.at = function(path){
+      //randop place to deploy 
       var rand = Math.floor(Math.random() * ((path.length-1)/2 + (path.length-1)/10 - (path.length-1)/2 + 1)) + (path.length-1)/2;
       this.attr({ x: path[rand][0], y: path[rand][1]});
       this.go(path, rand + 1);
@@ -131,6 +139,57 @@ Crafty.c('Plane', {
       }, 50);
     }  
   }
+});
+
+Crafty.c('Torpedo', {
+  init: function(){
+    this.requires('2D, Canvas, Color, Collision');
+    this.color('rgb(0, 0, 128)');
+    this.attr({
+      w: 2,
+      h: 2,
+    });
+  },
+
+  at: function(path){
+    this.attr({ x: path[path.length-1][0], y: path[path.length-1][1]});
+    this.go(path, path.length-2);
+  },
+
+  go: function(path, n){
+    this.x = path[n][0];
+    this.y = path[n][1];
+    this.curentPos = n-1;
+    if(this.curentPos>0){
+      this.timeout(function(){
+        this.go(path, this.curentPos);
+      }, 50);
+    } else {
+      this.destroy();
+    }
+  }, 
+
+  remove: function(){
+    this.destroy();
+  }
+});
+
+Crafty.c('TorpedoButton', {
+  init: function(){
+    this.requires('2D, Canvas, Color, Mouse');
+    this.color('rgb(0, 0, 128)');
+    this.attr({
+      w: 20,
+      h: 20,
+    });
+    this.bind('Click', function(){
+      Crafty.e('Torpedo').at(pathAr);
+    });
+  },
+
+  at: function(x, y){
+    this.attr({ x: x, y: y});
+  },
 });
 
 // TO REMOVE!!!!!!!!!!!!!!!!
