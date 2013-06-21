@@ -11,18 +11,27 @@ Crafty.c('Ship', {
   bulletHit: function(){
     this.health -= 10;
     if (this.health<=0) {
+      Game.gameVaulues.money += this.prize;
+      Game.gameVaulues.rating += this.prize;
+      Crafty.trigger('Update');
       this.destroy();
     };
   },
 
   portHit: function(){
     console.log('Port Hit');
+    Game.gameVaulues.health -= this.health/100;
+    Crafty.trigger('Update');
+    Crafty.trigger('GameEnd');
     this.destroy();
   },
 
   torpedoHit: function(data){
     torpedo = data[0].obj;
     torpedo.remove();
+    Game.gameVaulues.money += this.prize;
+    Game.gameVaulues.rating += this.prize;
+    Crafty.trigger('Update');
     this.destroy();
   }, 
 
@@ -48,6 +57,7 @@ Crafty.c('Boat', {
     this.requires('Ship');
     this.color('rgb(255, 255, 255)');
     this.health = 1000;
+    this.prize = 100;
     this.attr({
       w: 10,
       h: 10,
@@ -60,6 +70,7 @@ Crafty.c('Warship',  {
     this.requires('Ship');
     this.color('rgb(255, 255, 255)');
     this.health = 2000;
+    this.prize = 200;
     this.attr({
       w: 20,
       h: 10,
@@ -72,6 +83,7 @@ Crafty.c('Submarine',  {
     this.requires('Ship');
     this.color('rgb(255, 255, 255)');
     this.health = 2000;
+    this.prize = 300;
     this.attr({
     w: 20,
     h: 10,
@@ -89,7 +101,8 @@ Crafty.c('Airship', {
   init: function(){
     this.requires('Ship');
     this.color('rgb(255, 255, 255)');
-    this.health = 100;
+    this.health = 4000;
+    this.prize = 400;
     this.attr({
     w: 30,
     h: 10,
@@ -109,7 +122,8 @@ Crafty.c('Plane', {
     this.onHit('Bullet_t', this.bulletHit);
     this.onHit('Port', this.portHit);
     this.color('rgb(255, 255, 255)');
-    this.health = 4000;
+    this.health = 500;
+    this.prize = 75;
     this.attr({
     w: 10,
     h: 10,
@@ -190,6 +204,12 @@ Crafty.c('TorpedoButton', {
   at: function(x, y){
     this.attr({ x: x, y: y});
   },
+});
+
+Crafty.c('Textfield', {
+  init: function(){
+    this.requires('2D, DOM, Text');
+  }
 });
 
 // TO REMOVE!!!!!!!!!!!!!!!!
