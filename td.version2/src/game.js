@@ -15,17 +15,6 @@ $(document).ready(function() {
 		//start the main scene when loaded
 		Crafty.scene("main");
 	});
-	var tower1;
-	var tower2;
-	var tower3;
-	var visit = false;
-	/*
-	function moweToPoint(sX,sY,fX,fY,speed){
-		partialX = Math.abs(sX - fX)/speed;
-		partialY = Math.abs(sY - fY)/speed;
-		console.log(partialX); //DELETE
-		console.log(partialY); //DELETE
-	}*/
 	function moweToPointX(sX,fX,speed){
 		partialX =  (sX - fX)/speed;
 		return partialX;
@@ -34,132 +23,202 @@ $(document).ready(function() {
 		partialY =  (sY - fY)/speed;
 		return partialY;
 	}
-	function deleteVar () {
-		 		console.log("delete"); //DELETE
-		 		tower1.destroy();
-		 		tower2.destroy();
-		 		tower3.destroy();
-		 	}
 	Crafty.scene("main", function() {
 		Crafty.background("url('src/bg.png')");
 		
-		//score display
-		var score = Crafty.e("2D, DOM, Text")
-			.text("Score: 0")
-			.attr({x: Crafty.viewport.width - 300, y: Crafty.viewport.height - 50, w: 200, h:50})
-			.css({color: "#fff"});
-			
-		//tower entity
-		var tower = Crafty.e("2D, Canvas, tField, Collision, Mouse")
-			.attr({  x: 500, y: 500, score: 0}) //Probable del "Score"
-			.bind("Click", function(e) {
-				if (visit == true){
-					deleteVar ();
-					visit = false;
-				}else if (visit == false){
-					buildTower();
-					visit = true;
-				}
-				
-			}).bind("EnterFrame", function() {
-
-			});
-			shot();
-
-		//target component
-		Crafty.c("target", {   
-			init: function() {
-				this.origin("center");
+		Crafty.c("tower", {
+			init: function(){
+				this.requires("2D, Canvas, tField, Mouse");
+				this.visit = false;
 				this.attr({
-					x: 10, //give it random positions, rotation and speed
-					y: 110,
-					xspeed: 0, 
-					yspeed: 0, 
-				}).bind("EnterFrame", function() {
-					this.x += this.xspeed;
-					this.y += this.yspeed;
-				}).collision()
-				.onHit("bullet", function(e) {
-					//if hit by a bullet increment the score
-					tower.score += 5;
-					score.text("Score: "+tower.score);
-					e[0].obj.destroy(); //destroy the bullet
+					w:60,
+					h:60
+				});
+				this.bind("Click", function(){
+					if (this.visit == true){
+						tower1.destroy();
+		 				tower2.destroy();
+		 				tower3.destroy();
+						this.visit = false;
+					}else if (this.visit == false){
+						this.buildTower(this.x,this.y);
 
-					this.destroy(); //or take lives
-					console.log("Destroy object"); //DELETE
-					shot();
-				}).bind("Click", function(e) {
-				console.log(arguments);
+						this.visit = true;
+					}
+					});
+				this.bind("tFieldDelete", function(){
+					this.destroy();
+				});
+				},
+			at: function(x,y){
+				this.attr({
+					x: x,
+					y: y
+				});
+			},
+			buildTower: function(x,y) {
+			console.log("Build tower function start"); //DELETE
+			tower1 = Crafty.e("2D,DOM,tower1,Mouse")
+			.attr({ x: this.x - this.h, y: this.y - this.w})
+			.bind("Click", function(e) {
+				//Here should be checking of player balance
+				tower1.destroy();
+		 		tower2.destroy();
+		 		tower3.destroy();
+				this.visit = false;
+				Crafty.e("towerOne").at(x,y);
+				Crafty.trigger("tFieldDelete");
+		  	});
+		 	tower2 = Crafty.e("2D,DOM,tower2,Mouse")
+		  	.attr({ x: this.x - this.h, y: this.y})
+		  	.bind("Click", function(e) {
+				//Here should be checking of player balance
+				tower1.destroy();
+		 		tower2.destroy();
+		 		tower3.destroy();
+				this.visit = false;
+				Crafty.e("towerTwo").at(x,y);
+				Crafty.trigger("tFieldDelete");
+		  	});
+		  	tower3 = Crafty.e("2D,DOM,tower3,Mouse")
+		 	.attr({ x: this.x - this.h, y: this.y + this.w})
+		 	.bind("Click", function(e) {
+				//Here should be checking of player balance
+				tower1.destroy();
+		 		tower2.destroy();
+		 		tower3.destroy();
+				this.visit = false;
+				Crafty.e("towerThree").at(x,y);
+				Crafty.trigger("tFieldDelete");
+		  	});
+		}
+			});
+
+		Crafty.c("towerOne", {
+			init: function(){
+				this.requires("2D, Canvas, tower1");
+				this.attr({
+					w:60,
+					h:60
+				});
+				},
+			at: function(x,y){
+				this.attr({
+					x: x,
+					y: y
+				});
+			}
+			});
+		Crafty.c("towerTwo", {
+			init: function(){
+				this.requires("2D, Canvas, tower2");
+				this.attr({
+					w:60,
+					h:60
+				});
+				},
+			at: function(x,y){
+				this.attr({
+					x: x,
+					y: y
+				});
+			}
+			});
+		Crafty.c("towerThree", {
+			init: function(){
+				this.requires("2D, Canvas, tower3");
+				this.attr({
+					w:40,
+					h:40
+				});
+				},
+			at: function(x,y){
+				this.attr({
+					x: x,
+					y: y
+				});
+			}
+			});
+
+		Crafty.c("bulletOne", {
+			strength: 100,
+			init: function() {
+				this.requires("2D, Canvas, tower3");
+				this.attr({
+					w:40,
+					h:40,
+				})
+				.bind("EnterFrame", function() {
+					this.x -= this.xspeed;
+					this.y -= this.yspeed;
+					//destroy if it goes out of bounds
+					if(this._x > Crafty.viewport.width || this._x < 0 || this._y > Crafty.viewport.height || this._y < 0) {
+						this.destroy();
+					}
+				});
+			},
+			at: function(x,y,xf,yf,speed){
+				this.attr({
+					x: x,
+					y: y,
+					xspeed: moweToPointX(this.x,xf,speed), 
+					yspeed: moweToPointY(this.y,yf,speed)
 				});
 			}
 		});
-
-		function shot () {
-			x = 10; //x coordinate of taget
-			y = 110;//y coordinate of taget
-			speed = 50;
-			Crafty.e("2D, DOM, Color, bullet")
-					.attr({
-						x: tower.x, 
-						y: tower.y, 
-						w: 10, 
-						h: 10, 
-						xspeed: moweToPointX(tower.x,x,speed), 
-						yspeed: moweToPointY(tower.y,y,speed)
-					})
-					.color("rgb(255, 0, 0)")
-					.bind("EnterFrame", function() {
-
-						this.x -= this.xspeed;
-						this.y -= this.yspeed;
-						//destroy if it goes out of bounds
-						if(this._x > Crafty.viewport.width || this._x < 0 || this._y > Crafty.viewport.height || this._y < 0) {
-							this.destroy();
-							initTarget();
-							shot();
-							console.log("Destroy bullet"); //DELETE
-						}
-					});
-		}
-
-		function initTarget() {
-			Crafty.e("2D, DOM, tower1, Collision, target");
-		}
-		initTarget();
-	
-		function buildTower () {
-			//moweToPoint(103,200,70,137,5);
-			console.log("Build tower function start"); //DELETE
-			tower1 = Crafty.e("2D,DOM,tower1,Mouse")
-			.attr({ x: tower.x - tower.h, y: tower.y - tower.w})
-			.bind("Click", function(e) {
-				//Here should be checking of player balance
-				tower.removeComponent("tField").addComponent("tower1");
-				deleteVar();
-				visit = false;
-
-	  			console.log("Change tower"); //DELETE
-		  	});
-		 	tower2 = Crafty.e("2D,DOM,tower2,Mouse")
-		  	.attr({ x: tower.x - tower.h, y: tower.y})
-		  	.bind("Click", function(e) {
-				//Here should be checking of player balance
-				tower.removeComponent("tField").addComponent("tower2");
-				deleteVar();
-				visit = false;
-
-	  			console.log("Change tower"); //DELETE
-		  	});
-		  	tower3 = Crafty.e("2D,DOM,tower3,Mouse")
-		 	.attr({ x: tower.x - tower.h, y: tower.y + tower.w})
-		 	.bind("Click", function(e) {
-				//Here should be checking of player balance
-				tower.removeComponent("tField").addComponent("tower3");
-				deleteVar();
-				visit = false;
-
-	  			console.log("Change tower"); //DELETE
-		  	});
-		}
+		Crafty.c("bulletTwo", {
+			strength: 200,   
+			init: function() {
+				this.requires("2D, Canvas, tower3");
+				this.attr({
+					w:40,
+					h:40,
+				})
+				.bind("EnterFrame", function() {
+					this.x -= this.xspeed;
+					this.y -= this.yspeed;
+					//destroy if it goes out of bounds
+					if(this._x > Crafty.viewport.width || this._x < 0 || this._y > Crafty.viewport.height || this._y < 0) {
+						this.destroy();
+					}
+				});
+			},
+			at: function(x,y,xf,yf,speed){
+				this.attr({
+					x: x,
+					y: y,
+					xspeed: moweToPointX(this.x,xf,speed), 
+					yspeed: moweToPointY(this.y,yf,speed)
+				});
+			}
+		});
+		Crafty.c("bulletThree", { 
+			strength: 300,  
+			init: function() {
+				this.requires("2D, Canvas, tower3");
+				this.attr({
+					w:40,
+					h:40,
+				})
+				.bind("EnterFrame", function() {
+					this.x -= this.xspeed;
+					this.y -= this.yspeed;
+					//destroy if it goes out of bounds
+					if(this._x > Crafty.viewport.width || this._x < 0 || this._y > Crafty.viewport.height || this._y < 0) {
+						this.destroy();
+					}
+				});
+			},
+			at: function(x,y,xf,yf,speed){
+				this.attr({
+					x: x,
+					y: y,
+					xspeed: moweToPointX(this.x,xf,speed), 
+					yspeed: moweToPointY(this.y,yf,speed)
+				});
+			}
+		});
+		Crafty.e("tower").at(100,100);
+		Crafty.e("bullet").at(200,200,500,500,50);
 	});
 });
