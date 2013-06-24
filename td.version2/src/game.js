@@ -19,6 +19,21 @@ $(document).ready(function() {
 	var tower2;
 	var tower3;
 	var visit = false;
+	/*
+	function moweToPoint(sX,sY,fX,fY,speed){
+		partialX = Math.abs(sX - fX)/speed;
+		partialY = Math.abs(sY - fY)/speed;
+		console.log(partialX); //DELETE
+		console.log(partialY); //DELETE
+	}*/
+	function moweToPointX(sX,fX,speed){
+		partialX =  (sX - fX)/speed;
+		return partialX;
+	}
+	function moweToPointY(sY,fY,speed){
+		partialY =  (sY - fY)/speed;
+		return partialY;
+	}
 	function deleteVar () {
 		 		console.log("delete"); //DELETE
 		 		tower1.destroy();
@@ -36,7 +51,7 @@ $(document).ready(function() {
 			
 		//tower entity
 		var tower = Crafty.e("2D, Canvas, tField, Collision, Mouse")
-			.attr({  x: 100, y: 100, score: 0}) //Probable del "Score"
+			.attr({  x: 500, y: 500, score: 0}) //Probable del "Score"
 			.bind("Click", function(e) {
 				if (visit == true){
 					deleteVar ();
@@ -56,10 +71,10 @@ $(document).ready(function() {
 			init: function() {
 				this.origin("center");
 				this.attr({
-					x: 200, //give it random positions, rotation and speed
-					y: 0,
+					x: 10, //give it random positions, rotation and speed
+					y: 110,
 					xspeed: 0, 
-					yspeed: 10, 
+					yspeed: 0, 
 				}).bind("EnterFrame", function() {
 					this.x += this.xspeed;
 					this.y += this.yspeed;
@@ -80,22 +95,27 @@ $(document).ready(function() {
 		});
 
 		function shot () {
+			x = 10; //x coordinate of taget
+			y = 110;//y coordinate of taget
+			speed = 50;
 			Crafty.e("2D, DOM, Color, bullet")
 					.attr({
 						x: tower.x, 
 						y: tower.y, 
 						w: 10, 
 						h: 10, 
-						xspeed: 10, 
-						yspeed: 0
+						xspeed: moweToPointX(tower.x,x,speed), 
+						yspeed: moweToPointY(tower.y,y,speed)
 					})
 					.color("rgb(255, 0, 0)")
 					.bind("EnterFrame", function() {
-						this.x += this.xspeed;
+
+						this.x -= this.xspeed;
 						this.y -= this.yspeed;
 						//destroy if it goes out of bounds
 						if(this._x > Crafty.viewport.width || this._x < 0 || this._y > Crafty.viewport.height || this._y < 0) {
 							this.destroy();
+							initTarget();
 							shot();
 							console.log("Destroy bullet"); //DELETE
 						}
@@ -108,6 +128,7 @@ $(document).ready(function() {
 		initTarget();
 	
 		function buildTower () {
+			//moweToPoint(103,200,70,137,5);
 			console.log("Build tower function start"); //DELETE
 			tower1 = Crafty.e("2D,DOM,tower1,Mouse")
 			.attr({ x: tower.x - tower.h, y: tower.y - tower.w})
