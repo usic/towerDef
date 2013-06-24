@@ -25,7 +25,7 @@ $(document).ready(function() {
 	}
 	Crafty.scene("main", function() {
 		Crafty.background("url('src/bg.png')");
-		
+
 		Crafty.c("tower", {
 			init: function(){
 				this.requires("2D, Canvas, tField, Mouse");
@@ -50,14 +50,14 @@ $(document).ready(function() {
 					this.destroy();
 				});
 				},
-			at: function(x,y){
+			at: function(x,y,array){
+				this.array;
 				this.attr({
 					x: x,
 					y: y
 				});
 			},
 			buildTower: function(x,y) {
-			console.log("Build tower function start"); //DELETE
 			tower1 = Crafty.e("2D,DOM,tower1,Mouse")
 			.attr({ x: this.x - this.h, y: this.y - this.w})
 			.bind("Click", function(e) {
@@ -90,9 +90,9 @@ $(document).ready(function() {
 				this.visit = false;
 				Crafty.e("towerThree").at(x,y);
 				Crafty.trigger("tFieldDelete");
-		  	});
-		}
-			});
+		  		});
+			}
+		});
 
 		Crafty.c("towerOne", {
 			init: function(){
@@ -101,14 +101,20 @@ $(document).ready(function() {
 					w:60,
 					h:60
 				});
-				},
-			at: function(x,y){
+				this.bind("fire", function(){
+					ship = data[0].obj;
+					ship.curentPos
+				})
+			},
+			at: function(x,y,array){
+				this.array;
 				this.attr({
 					x: x,
 					y: y
 				});
 			}
 			});
+
 		Crafty.c("towerTwo", {
 			init: function(){
 				this.requires("2D, Canvas, tower2");
@@ -116,14 +122,16 @@ $(document).ready(function() {
 					w:60,
 					h:60
 				});
-				},
-			at: function(x,y){
+			},
+			at: function(x,y,array){
+				this.array;
 				this.attr({
 					x: x,
 					y: y
 				});
 			}
-			});
+		});
+
 		Crafty.c("towerThree", {
 			init: function(){
 				this.requires("2D, Canvas, tower3");
@@ -132,16 +140,16 @@ $(document).ready(function() {
 					h:40
 				});
 				},
-			at: function(x,y){
+			at: function(x,y,array){
+				this.array;
 				this.attr({
 					x: x,
 					y: y
 				});
 			}
-			});
+		});
 
-		Crafty.c("bulletOne", {
-			strength: 100,
+		Crafty.c("bullet", {
 			init: function() {
 				this.requires("2D, Canvas, tower3");
 				this.attr({
@@ -157,6 +165,7 @@ $(document).ready(function() {
 					}
 				});
 			},
+			//x,y: coordinates of tower (start of bulet), xf,yf: coordinates of target (finish point)
 			at: function(x,y,xf,yf,speed){
 				this.attr({
 					x: x,
@@ -166,57 +175,26 @@ $(document).ready(function() {
 				});
 			}
 		});
+
+		Crafty.c("bulletOne", {
+			strength: 100,   
+			init: function() {
+				this.requires("bullet");
+			},
+		});
+
 		Crafty.c("bulletTwo", {
 			strength: 200,   
 			init: function() {
-				this.requires("2D, Canvas, tower3");
-				this.attr({
-					w:40,
-					h:40,
-				})
-				.bind("EnterFrame", function() {
-					this.x -= this.xspeed;
-					this.y -= this.yspeed;
-					//destroy if it goes out of bounds
-					if(this._x > Crafty.viewport.width || this._x < 0 || this._y > Crafty.viewport.height || this._y < 0) {
-						this.destroy();
-					}
-				});
+				this.requires("bullet");
 			},
-			at: function(x,y,xf,yf,speed){
-				this.attr({
-					x: x,
-					y: y,
-					xspeed: moweToPointX(this.x,xf,speed), 
-					yspeed: moweToPointY(this.y,yf,speed)
-				});
-			}
 		});
-		Crafty.c("bulletThree", { 
-			strength: 300,  
+
+		Crafty.c("bulletThree", {
+			strength: 300,   
 			init: function() {
-				this.requires("2D, Canvas, tower3");
-				this.attr({
-					w:40,
-					h:40,
-				})
-				.bind("EnterFrame", function() {
-					this.x -= this.xspeed;
-					this.y -= this.yspeed;
-					//destroy if it goes out of bounds
-					if(this._x > Crafty.viewport.width || this._x < 0 || this._y > Crafty.viewport.height || this._y < 0) {
-						this.destroy();
-					}
-				});
+				this.requires("bullet");
 			},
-			at: function(x,y,xf,yf,speed){
-				this.attr({
-					x: x,
-					y: y,
-					xspeed: moweToPointX(this.x,xf,speed), 
-					yspeed: moweToPointY(this.y,yf,speed)
-				});
-			}
 		});
 		Crafty.e("tower").at(100,100);
 		Crafty.e("bullet").at(200,200,500,500,50);
