@@ -13,6 +13,7 @@ Crafty.c('Ship', {
     if (this.health<=0) {
       Game.gameVaulues.money += this.prize;
       Game.gameVaulues.rating += this.prize;
+      Game.gameVaulues.shipsLeft --;
       Crafty.trigger('Update');
       this.destroy();
     };
@@ -21,6 +22,7 @@ Crafty.c('Ship', {
   portHit: function(){
     console.log('Port Hit');
     Game.gameVaulues.health -= this.health/100;
+    Game.gameVaulues.shipsLeft --;
     Crafty.trigger('Update');
     Crafty.trigger('GameEnd');
     this.destroy();
@@ -31,6 +33,7 @@ Crafty.c('Ship', {
     torpedo.remove();
     Game.gameVaulues.money += this.prize;
     Game.gameVaulues.rating += this.prize;
+    Game.gameVaulues.shipsLeft --;
     Crafty.trigger('Update');
     this.destroy();
   }, 
@@ -197,7 +200,11 @@ Crafty.c('TorpedoButton', {
       h: 20,
     });
     this.bind('Click', function(){
-      Crafty.e('Torpedo').at(pathAr);
+      if(Game.gameVaulues.torpedos > 0){
+        Game.gameVaulues.torpedos --;
+        Crafty.trigger('UpdateTorp');
+        Crafty.e('Torpedo').at(pathAr);
+      }
     });
   },
 
