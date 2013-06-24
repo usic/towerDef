@@ -10,8 +10,6 @@ Game = {
   },
 
   start: function() {
-    
-    
 
     Crafty.init(300, 300);
     Crafty.background('green');

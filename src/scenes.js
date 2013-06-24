@@ -15,9 +15,10 @@ Crafty.scene("Game", function(){
     Crafty.e('Textfield').attr({ x: 50, y: 0 }).text(Game.gameVaulues.rating).bind('Update', function(){this.text(Game.gameVaulues.rating);});
     Crafty.e('Textfield').attr({ x: 100, y: 0 }).text(Game.gameVaulues.health).bind('Update', function(){this.text(Game.gameVaulues.health);});
 
-    Crafty.e('Textfield').attr({ x: 280, y: 0, z: 2, }).text(Game.gameVaulues.torpedos).bind('UpdateTorp', function(){this.text(Game.gameVaulues.torpedos);});
+    Crafty.e('Textfield').attr({ x: 200, y: 0, z: 2, }).text(Game.gameVaulues.torpedos).bind('UpdateTorp', function(){this.text(Game.gameVaulues.torpedos);});
 
-    Crafty.e('TorpedoButton').at(280, 0);
+    Crafty.e('PauseButton').at(280, 0); 
+    Crafty.e('TorpedoButton').at(200, 0);
 
     //ships to sent in curent wave
     var boats = 0;
@@ -93,7 +94,7 @@ Crafty.scene("Game", function(){
             break;
           }
           Crafty.trigger('Update');
-        } else if (Game.gameVaulues.shipsLeft<=0) {
+        } else if (Game.gameVaulues.shipsLeft<=0 && Game.gameVaulues.health>0) {
 
           if (boats!=0 && boatsSd!=boats) {
 

@@ -219,6 +219,24 @@ Crafty.c('Textfield', {
   }
 });
 
+Crafty.c('PauseButton', {
+  init: function(){
+    this.requires('2D, Canvas, Color, Mouse');
+    this.color('rgb(255, 0, 0)');
+    this.attr({
+      w: 20,
+      h: 20,
+    });
+    this.bind('Click', function(){
+      Crafty.pause();
+    });
+  },
+
+  at: function(x, y){
+    this.attr({ x: x, y: y});
+  },
+});
+
 // TO REMOVE!!!!!!!!!!!!!!!!
 Crafty.c('Bullet_t', {
   init: function(){
