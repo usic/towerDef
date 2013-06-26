@@ -1,24 +1,49 @@
+Crafty.scene("Load", function(){
+  Crafty.load(["assets/bullet.png", "assets/EmptyTower.png", "assets/rocket.png", "assets/Tower1.png", "assets/Tower2.png", "assets/Ship1.png", "assets/Ship2.png", "assets/Ship3.png", "assets/Torpeda.png", "assets/torpedo.png"], function() {
+  //splice the spritemap
+
+  //start the main scene when loaded
+  Crafty.scene("Game");
+ });
+});
+
 Crafty.scene("Game", function(){
-	for (var i = 0; i < pathAr.length; i++) {
-    	
-    	Crafty.e('2D, Canvas, Color')
+
+  Crafty.background('url("assets/Background.png")');
+
+	/*for (var i = 0; i < pathAr.length; i++) {
+    	Crafty.e('2D, Canvas, Color, Text')
             .attr({
               x: pathAr[i][0],
               y: pathAr[i][1],
               w: 2,
               h: 2
             })
+            .text(i)
             .color('rgb(255, 0, 0)');
-    };
+    };*/
 
-    Crafty.e('Textfield').attr({ x: 0, y: 0 }).text(Game.gameVaulues.money).bind('Update', function(){this.text(Game.gameVaulues.money);});
-    Crafty.e('Textfield').attr({ x: 50, y: 0 }).text(Game.gameVaulues.rating).bind('Update', function(){this.text(Game.gameVaulues.rating);});
-    Crafty.e('Textfield').attr({ x: 100, y: 0 }).text(Game.gameVaulues.health).bind('Update', function(){this.text(Game.gameVaulues.health);});
+    Crafty.e('2D, Canvas, Image').image("assets/Tower1.png").attr({x:400, y:0, z:3});
+    Crafty.e('Textfield').attr({ x: 450, y: 0 }).text(" 500");
 
-    Crafty.e('Textfield').attr({ x: 200, y: 0, z: 2, }).text(Game.gameVaulues.torpedos).bind('UpdateTorp', function(){this.text(Game.gameVaulues.torpedos);});
+    Crafty.e('2D, Canvas, Image').image("assets/Tower2.png").attr({x:500, y:0, z:3});
+    Crafty.e('Textfield').attr({ x: 550, y: 0 }).text(" 1500");
 
-    Crafty.e('PauseButton').at(280, 0); 
-    Crafty.e('TorpedoButton').at(200, 0);
+    Crafty.e('tower').at(20, 160, Array(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,23,24,25));
+    Crafty.e('tower').at(200, 500, Array(43,44,45,46,47,48,49,50,51,52,53,54,55));
+    Crafty.e('tower').at(200, 300, Array(33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55));
+    Crafty.e('tower').at(350, 450, Array(63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79));
+    Crafty.e('tower').at(600, 400, Array(80,81,82,83,84,85,86,87,88,89,90));
+
+    Crafty.e('Port').at(pathAr[pathAr.length-1][0], pathAr[pathAr.length-1][1]);
+
+    Crafty.e('Textfield').attr({ x: 0, y: 0 }).text("Money "+Game.gameVaulues.money).bind('Update', function(){this.text("Money "+Game.gameVaulues.money);});
+    Crafty.e('Textfield').attr({ x: 100, y: 0 }).text("Rating "+Game.gameVaulues.rating).bind('Update', function(){this.text("Rating "+Game.gameVaulues.rating);});
+    Crafty.e('Textfield').attr({ x: 200, y: 0 }).text("Health "+Game.gameVaulues.health).bind('Update', function(){this.text("Health "+Game.gameVaulues.health);});
+
+    Crafty.e('Textfield').attr({ x: 280, y: 0, z: 2, }).text(Game.gameVaulues.torpedos).bind('UpdateTorp', function(){this.text(Game.gameVaulues.torpedos);});
+
+    Crafty.e('TorpedoButton').at(290, 0);
 
     //ships to sent in curent wave
     var boats = 0;
@@ -43,10 +68,8 @@ Crafty.scene("Game", function(){
     var airshipsSd = 0;
 
     this.addShips = this.bind('Update', function(){
-      console.log(Game.gameVaulues.shipsLeft);
+
       if (newWave && Game.gameVaulues.shipsLeft<=0 && Game.gameVaulues.health>0) {
-        
-        console.log('Main if');
 
         newWave = false;
         
@@ -57,7 +80,6 @@ Crafty.scene("Game", function(){
         
         switch (curentShip) {
           case 1:
-          console.log('boat case');
             if (boats==0) {
               boats = 3;
             } else{
@@ -159,6 +181,13 @@ Crafty.scene("Game", function(){
         };
 
     });
+
+  this.endGame = this.bind('GameEnd', function(){
+    if (Game.gameVaulues.health<=0) {
+      Crafty.stop();
+      console.log('Game End');
+    };
+  });
 
   Crafty.trigger('Update');
 

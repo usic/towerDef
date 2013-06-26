@@ -37,10 +37,24 @@ function getBezierPath(arr, step) {
 }
 
 var arr = Array();
-arr[0] = new Array(0, 300);
-arr[1] = new Array(300, 0);
-arr[2] = new Array(0, 300);
-arr[3] = new Array(290, 290);
+arr[0] = new Array(0, 65);
+arr[1] = new Array(0, 65);
+arr[2] = new Array(105, 65);
+arr[3] = new Array(105, 65);
+arr[4] = new Array(210, 65);
+arr[5] = new Array(160, 350);
+arr[6] = new Array(100, 400);
+arr[7] = new Array(100, 420);
+arr[8] = new Array(0, 510);
+arr[9] = new Array(310, 545);
+arr[10] = new Array(295, 525);
+arr[11] = new Array(300, 290);
+arr[12] = new Array(290, 100);
+arr[13] = new Array(529, 355);
+arr[14] = new Array(510, 280);
+arr[15] = new Array(540, 660);
+arr[16] = new Array(590, 580);
+arr[17] = new Array(625, 610);
 
 var pathAr = Array();
 pathAr = getBezierPath(arr);
